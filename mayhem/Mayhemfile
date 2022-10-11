@@ -5,7 +5,7 @@ project: textql
 target: textql-sqlparser
 
 # Base image to run the binary in.
-image: ghcr.io/lotdeef/textql:latest
+# image: ghcr.io/lotdeef/textql:latest
 
 # List of commands used to test the target
 cmds:
