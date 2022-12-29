@@ -1,13 +1,13 @@
-# Build Geth in a stock Go builder container
 FROM fuzzers/go-fuzz:1.2.0 as builder
 
-ADD . textql
-WORKDIR /go/textql
+ARG project='textql'
+ARG fuzzTargetPath='sqlparser'
+ARG fuzzTarget='sqlparser-fuzz'
 
-RUN cd sqlparser && GO_ENABLED=0 go-fuzz-build -libfuzzer -o ../fuzz.a .
-RUN clang -fsanitize=fuzzer fuzz.a -o fuzz.libfuzzer
+ADD . ${project}
+WORKDIR ${project}
+RUN GO_ENABLED=0 go-fuzz-build -libfuzzer -o /${fuzzTarget}.a ./${fuzzTargetPath}
+RUN clang -fsanitize=fuzzer /${fuzzTarget}.a -o /${fuzzTarget}.libfuzzer
 
 FROM ubuntu:20.04
-COPY --from=builder /go/textql/fuzz.libfuzzer /
-
-# CMD ["./bitutil.libfuzzer"]
+COPY --from=builder /sqlparser-fuzz.libfuzzer /
